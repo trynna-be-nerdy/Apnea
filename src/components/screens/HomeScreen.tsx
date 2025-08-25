@@ -12,14 +12,16 @@ export function HomeScreen() {
   const navigate = useNavigate();
   const { targetBedtime, wakeTime } = useAppStore();
   const [lastNight, setLastNight] = useState<NightSummary | null>(null);
+  const [nights, setNights] = useState<NightSummary[]>([]);
   const [caffeineStatus, setCaffeineStatus] = useState<CaffeineStatus>('OK');
   const [remainingCaffeine, setRemainingCaffeine] = useState(0);
 
   useEffect(() => {
     const loadData = async () => {
-      const nights = await HistoryService.listNights();
-      if (nights.length > 0) {
-        setLastNight(nights[nights.length - 1]);
+      const nightsData = await HistoryService.listNights();
+      setNights(nightsData);
+      if (nightsData.length > 0) {
+        setLastNight(nightsData[nightsData.length - 1]);
       }
       
       const status = await CaffeineService.statusNow();
@@ -46,6 +48,13 @@ export function HomeScreen() {
       month: 'short', 
       day: 'numeric' 
     });
+  };
+
+  const getSleepScoreColor = (score: number) => {
+    if (score >= 85) return 'text-sleep-excellent';
+    if (score >= 70) return 'text-sleep-good';
+    if (score >= 50) return 'text-sleep-fair';
+    return 'text-sleep-poor';
   };
 
   const getCaffeineStatusColor = (status: CaffeineStatus) => {
@@ -195,6 +204,36 @@ export function HomeScreen() {
               className="chip"
             >
               View Details
+            </button>
+          </div>
+        </SleepCard>
+
+        {/* Recent History Preview */}
+        <SleepCard title="Sleep History">
+          <div className="space-y-3">
+            {nights.slice(0, 3).map((night) => (
+              <div key={night.date} className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <Moon className="w-4 h-4 text-accent" />
+                  <div>
+                    <div className="text-sm font-medium text-text">
+                      {formatDate(night.date)}
+                    </div>
+                    <div className="text-xs text-muted">
+                      {Math.round(night.se * 100)}% efficiency
+                    </div>
+                  </div>
+                </div>
+                <div className={`text-sm font-bold ${getSleepScoreColor(night.sleepScore)}`}>
+                  {night.sleepScore}
+                </div>
+              </div>
+            ))}
+            <button 
+              onClick={() => navigate('/history')}
+              className="text-accent text-sm hover:underline w-full text-center pt-2 border-t border-border"
+            >
+              View all {nights.length} nights →
             </button>
           </div>
         </SleepCard>

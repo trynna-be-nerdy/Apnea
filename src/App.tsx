@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { BottomTabs } from "./components/navigation/BottomTabs";
 import { HomeScreen } from "./components/screens/HomeScreen";
 import { NightSessionScreen } from "./components/screens/NightSessionScreen";
+import { HistoryScreen } from "./components/screens/HistoryScreen";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 
@@ -21,7 +22,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<HomeScreen />} />
             <Route path="/night-session" element={<NightSessionScreen />} />
-            <Route path="/history" element={<div className="p-4 pb-20 text-center text-muted">History Screen - Coming Soon</div>} />
+            <Route path="/history" element={<HistoryScreen />} />
             <Route path="/coach" element={<div className="p-4 pb-20 text-center text-muted">Coach Screen - Coming Soon</div>} />
             <Route path="/settings" element={<div className="p-4 pb-20 text-center text-muted">Settings Screen - Coming Soon</div>} />
             <Route path="/morning-report" element={<div className="p-4 pb-20 text-center text-muted">Morning Report - Coming Soon</div>} />
